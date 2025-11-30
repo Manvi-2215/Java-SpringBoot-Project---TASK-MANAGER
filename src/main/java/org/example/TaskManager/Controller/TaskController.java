@@ -1,9 +1,10 @@
 package org.example.TaskManager.Controller;
 
+import org.example.TaskManager.Entity.Status;
 import org.example.TaskManager.Service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.config.Task;
+import org.example.TaskManager.Entity.Task;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class TaskController {
     //create task
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody Task request){
-        Task task = taskService.createTask(reuest);
+        Task task = taskService.createTask(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(task);
     }
 
@@ -31,11 +32,17 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(allTasks);
     }
 
-    //filter task by status
+    //find by id
     @GetMapping("/{id}")
     public ResponseEntity<Task> getTaskByID(@PathVariable Long id){
         Task taskById = taskService.findTaskById(id);
         return ResponseEntity.status(HttpStatus.FOUND).body(taskById);
+    }
+
+    //filter task by status
+    @GetMapping("/{status}")
+    public ResponseEntity<List<Task>> getTaskByStatus(@PathVariable Status status){
+        return ResponseEntity.status(HttpStatus.FOUND).body(taskService.findTaskByStatus(status));
     }
 
     //update task by id
@@ -47,9 +54,9 @@ public class TaskController {
 
     //delete task by id
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteTaskByID(@PathVariable Long id){
+    public ResponseEntity<Void> deleteTaskById(@PathVariable Long id){
         taskService.deleteTaskById(id);
-        return ResponseEntity<HttpStatus.OK>;
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -1,7 +1,7 @@
 package org.example.TaskManager.Entity;
 
 public enum Status {
-    PENDING,
+    TODO,
     IN_PROGRESS,
     COMPLETED
 }

@@ -1,8 +1,11 @@
 package org.example.TaskManager.Repository;
 
+import org.example.TaskManager.Entity.Task;
+import org.example.TaskManager.Entity.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
-import org.springframework.scheduling.config.Task;
 
-public class TaskRepository extends JpaRepository<Task, Long> {
+import java.util.List;
+
+public interface TaskRepository extends JpaRepository<Task, Long> {
+    List<Task> findByStatus(Status status);
 }
