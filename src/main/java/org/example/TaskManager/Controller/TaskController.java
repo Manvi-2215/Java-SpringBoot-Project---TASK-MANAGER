@@ -2,6 +2,7 @@ package org.example.TaskManager.Controller;
 
 import org.example.TaskManager.Entity.Status;
 import org.example.TaskManager.Service.TaskService;
+import org.example.TaskManager.Service.TaskServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.example.TaskManager.Entity.Task;
@@ -12,9 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/task")
 public class TaskController {
-    TaskService taskService;
+    TaskServiceImpl taskService;
 
-    TaskController(TaskService taskService){
+    TaskController(TaskServiceImpl taskService){
         this.taskService = taskService;
     }
 
@@ -40,7 +41,7 @@ public class TaskController {
     }
 
     //filter task by status
-    @GetMapping("/{status}")
+    @GetMapping("/status/{status}")
     public ResponseEntity<List<Task>> getTaskByStatus(@PathVariable Status status){
         return ResponseEntity.status(HttpStatus.FOUND).body(taskService.findTaskByStatus(status));
     }

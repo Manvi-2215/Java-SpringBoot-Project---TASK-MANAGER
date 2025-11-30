@@ -33,11 +33,11 @@ public class TaskServiceImpl {
                 .orElseThrow(() -> new RuntimeException("Task " + id + " not found"));
 
         // 2. Update fields safely
-        if (request.getTitle() != null && !request.getTitle().isBlank()) {
+        if (request.getTitle() != null) {
             existing.setTitle(request.getTitle());
         }
 
-        if (request.getDescription() != null && !request.getDescription().isBlank()) {
+        if (request.getDescription() != null) {
             existing.setDescription(request.getDescription());
         }
 
