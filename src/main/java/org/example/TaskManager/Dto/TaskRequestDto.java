@@ -1,30 +1,26 @@
 package org.example.TaskManager.Dto;
 
-
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.example.TaskManager.Entity.Status;
 
 import java.time.LocalDateTime;
 
 @Data
-public class TaskResponseDto {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class TaskRequestDto {
     private String title;
     private String description;
     @Enumerated(EnumType.STRING)
     private Status status;
     private LocalDateTime dueDate;
 
-    public TaskResponseDto() {}
+    // constructors
+    public TaskRequestDto() {}
 
-    public TaskResponseDto(Long id, String title, String description,
+    public TaskRequestDto(String title, String description,
                            Status status, LocalDateTime dueDate) {
-        this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
