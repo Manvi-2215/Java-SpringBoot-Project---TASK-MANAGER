@@ -3,7 +3,10 @@ package org.example.TaskManager.Service;
 import org.example.TaskManager.Dto.TaskRequestDto;
 import org.example.TaskManager.Dto.TaskResponseDto;
 import org.example.TaskManager.Entity.Status;
+import org.example.TaskManager.Exceptions.TaskNotFoundException;
 import org.example.TaskManager.Repository.TaskRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.example.TaskManager.Entity.Task;
 import java.util.List;
@@ -16,37 +19,30 @@ public class TaskServiceImpl {
         this.taskRepository = taskRepository;
     }
 
+    @Autowired
+    private ModelMapper mapper;
+
 
     public TaskResponseDto createTask(TaskRequestDto request) {
 
-        Task entity = new Task();
-        entity.setTitle(request.getTitle());
-        entity.setDescription(request.getDescription());
-        entity.setStatus(request.getStatus());
-        entity.setDueDate(request.getDueDate());
+        //here i am converting request to entity
+        Task entity = mapper.map(request, Task.class);
 
         Task saved = taskRepository.save(entity);
 
         // convert to response DTO
-        TaskResponseDto response = new TaskResponseDto();
-        response.setId(saved.getId());
-        response.setTitle(saved.getTitle());
-        response.setDescription(saved.getDescription());
-        response.setStatus(saved.getStatus());
-        response.setDueDate(saved.getDueDate());
+
+        TaskResponseDto response = mapper.map(saved, TaskResponseDto.class);
 
         return response;
     }
 
     public TaskResponseDto findTaskById(Long id) {
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new TaskNotFoundException("Task with id " + id + " not found"));
 
-        TaskResponseDto response = new TaskResponseDto();
-        response.setId(task.getId());
-        response.setTitle(task.getTitle());
-        response.setDescription(task.getDescription());
-        response.setStatus(task.getStatus());
+        //convert entity into response
+        TaskResponseDto response = mapper.map(task, TaskResponseDto.class);
 
         return response;
     }
@@ -56,11 +52,7 @@ public class TaskServiceImpl {
         List<Task> tasks = taskRepository.findAll();
         //now to convert each task in the list to a dto and then return list of response dto
         List<TaskResponseDto> taskDtoList = tasks.stream().map(task->{
-            TaskResponseDto dto = new TaskResponseDto();
-            dto.setId(task.getId());
-            dto.setTitle(task.getTitle());
-            dto.setDescription(task.getDescription());
-            dto.setStatus(task.getStatus());
+            TaskResponseDto dto = mapper.map(task, TaskResponseDto.class);
             return dto;
         }).toList();
         return taskDtoList;
@@ -87,14 +79,7 @@ public class TaskServiceImpl {
         Task updated = taskRepository.save(existing);
 
         // ENTITY → DTO
-        TaskResponseDto response = new TaskResponseDto();
-        response.setId(updated.getId());
-        response.setTitle(updated.getTitle());
-        response.setDescription(updated.getDescription());
-        response.setStatus(updated.getStatus());
-        response.setDueDate(updated.getDueDate());
-
-        return response;
+        return mapper.map(updated, TaskResponseDto.class);
     }
 
     public List<TaskResponseDto> findTaskByStatus(Status status) {
@@ -102,11 +87,7 @@ public class TaskServiceImpl {
         List<Task> tasks = taskRepository.findByStatus(status);
 
         return tasks.stream().map(task -> {
-            TaskResponseDto dto = new TaskResponseDto();
-            dto.setId(task.getId());
-            dto.setTitle(task.getTitle());
-            dto.setDescription(task.getDescription());
-            dto.setStatus(task.getStatus());
+            TaskResponseDto dto = mapper.map(task, TaskResponseDto.class);
             return dto;
         }).toList();
     }
